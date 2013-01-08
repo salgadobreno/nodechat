@@ -16,7 +16,14 @@
 @io.sockets.on 'connection', (client) ->
   console.log 'Client connected.'
 
+  client.on('join', (name) ->
+    console.log("client nick:" + name)
+    client.set('nickname', name)
+  )
+
   client.on('messages', (data) ->
-    console.log(data)
+    client.get('nickname', (err, name) ->
+      client.broadcast.emit('messages', name + ': ' + data)
+    )
   )
 
